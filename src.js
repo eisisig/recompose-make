@@ -1,18 +1,18 @@
 'use strict'
 
-var React = require('react')
-var forEach = require('lodash/forEach')
-var isArray = require('lodash/isArray')
-var keys = require('lodash/keys')
-var map = require('lodash/map')
-var pick = require('lodash/pick')
-var reduce = require('lodash/reduce')
-var recompose = require('recompose')
+const React = require('react')
+const forEach = require('lodash/forEach')
+const isArray = require('lodash/isArray')
+const keys = require('lodash/keys')
+const map = require('lodash/map')
+const pick = require('lodash/pick')
+const reduce = require('lodash/reduce')
+const recompose = require('recompose')
 
-var compose = recompose.compose
-var renderNothing = recompose.renderNothing
+const compose = recompose.compose
+const renderNothing = recompose.renderNothing
 
-var whitelist = [
+const whitelist = [
 	'mapProps',
 	'withProps',
 	'withPropsOnChange',
@@ -58,9 +58,9 @@ module.exports = function make ( enhancements ) {
 		return compose(renderNothing())
 	}
 
-	var component = {}
+	let component = {}
 
-	var allowedMethods = pick(enhancements, whitelist)
+	const allowedMethods = pick(enhancements, whitelist)
 
 	allowedMethods.setDisplayName = 'Component'
 
@@ -72,13 +72,13 @@ module.exports = function make ( enhancements ) {
 		allowedMethods.setPropTypes = allowedMethods.propTypes
 	}
 
-	var mappedMethods = reduce(keys(allowedMethods), function ( prev, method ) {
+	const mappedMethods = reduce(keys(allowedMethods), ( prev, method ) => {
 		if ( recompose.hasOwnProperty(method) ) {
 
-			var enhanceMethod = allowedMethods[ method ]
+			const enhanceMethod = allowedMethods[ method ]
 
 			if ( isArray(enhanceMethod) ) {
-				forEach(enhanceMethod, function (state) { return prev.push(recompose[ method ].apply(recompose, state)); })
+				forEach(enhanceMethod, state => prev.push(recompose[ method ](...state)))
 			} else {
 				prev.push(recompose[ method ](enhanceMethod))
 			}
@@ -89,9 +89,8 @@ module.exports = function make ( enhancements ) {
 
 	component.render = function () {
 		// const classes = { classes: cx({ name: enhancements.displayName }) }
-		return enhancements.render(Object.assign({}, this.props, { props: this.props }), this.refs, this.context)
+		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
 	}
 
-	return compose.apply(void 0, mappedMethods)(React.createClass(component))
+	return compose(...mappedMethods)(React.createClass(component))
 }
-
