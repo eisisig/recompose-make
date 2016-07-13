@@ -38,7 +38,7 @@ var whitelist = [
 
 /**
  * @method make
- * @param enhancements
+ * @param args
  *
  * @example export const displayName = 'Button'
  * export const defaultProps = {
@@ -51,7 +51,22 @@ var whitelist = [
  * export const render = ({ type, label, onClick }) => <button onClick={ onClick } type={ type }>{ label }</button>
  * export default make({ displayName, defaultProps, render })
  */
-module.exports = function make ( enhancements ) {
+module.exports = function make () {
+	var args = [], len = arguments.length;
+	while ( len-- ) args[ len ] = arguments[ len ];
+
+
+	var enhancements, displayName
+
+	if ( args.length > 2 ) {
+		console.warn('too many arguments')
+		return compose(renderNothing())
+	} else if ( args.length > 1 ) {
+		displayName = args[ 0 ]
+		enhancements = args[ 1 ]
+	} else {
+		enhancements = args[ 0 ]
+	}
 
 	if ( !enhancements.render ) {
 		console.warn('render method is required for make components')
@@ -64,8 +79,8 @@ module.exports = function make ( enhancements ) {
 
 	allowedMethods.setDisplayName = 'Component'
 
-	if ( allowedMethods.displayName ) {
-		allowedMethods.setDisplayName = allowedMethods.displayName
+	if ( displayName || allowedMethods.displayName ) {
+		allowedMethods.setDisplayName = displayName || allowedMethods.displayName
 	}
 
 	if ( allowedMethods.propTypes ) {
