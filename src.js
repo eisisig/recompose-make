@@ -2,6 +2,7 @@
 
 const React = require('react')
 const forEach = require('lodash/forEach')
+const { connect } = require('react-redux')
 const isArray = require('lodash/isArray')
 const keys = require('lodash/keys')
 const map = require('lodash/map')
@@ -34,6 +35,7 @@ const whitelist = [
 	// mapped to correct method
 	'displayName',
 	'propTypes',
+	'connect'
 ]
 
 /**
@@ -104,5 +106,10 @@ module.exports = function make ( ...args ) {
 		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
 	}
 
-	return compose(...mappedMethods)(React.createClass(component))
+	if ( allowedMethods.connect ) {
+		return connect(allowedMethods.connect)(compose(...mappedMethods)(React.createClass(component)))
+	} else {
+		return compose(...mappedMethods)(React.createClass(component))
+	}
+
 }
