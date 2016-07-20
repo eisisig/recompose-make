@@ -15,27 +15,27 @@ var compose = recompose.compose
 var renderNothing = recompose.renderNothing
 
 var whitelist = [
+	'defaultProps',
+	'setPropTypes',
+	'setDisplayName',
+	'displayName',
+	'propTypes',
 	'mapProps',
+	'renameProps',
+	'renameProp',
+	'flattenProp',
+	'onlyUpdateForKeys',
+	'onlyUpdateForPropTypes',
+	'withState',
 	'withProps',
 	'withPropsOnChange',
 	'withHandlers',
-	'defaultProps',
-	'renameProp',
-	'renameProps',
-	'flattenProp',
-	'withState',
 	'withReducer',
-	'shouldUpdate',
-	'onlyUpdateForKeys',
-	'onlyUpdateForPropTypes',
 	'withContext',
 	'getContext',
-	'setDisplayName',
-	'setPropTypes',
 	'createEagerElement',
+	'shouldUpdate',
 	// mapped to correct method
-	'displayName',
-	'propTypes',
 	'connect'
 ]
 
