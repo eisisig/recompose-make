@@ -12,15 +12,19 @@
     "functional",
     "make"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eisisig/recompose-make.git"
+  },
   "author": "eisisig <eisi@meniga.is>",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.13.1",
+    "lodash": "^4.15.0",
     "react-redux": "^4.4.5",
     "recompose": "^0.20.2",
-    "redux": "^3.5.2"
+    "redux": "^3.6.0"
   },
   "devDependencies": {
-    "ava": "^0.15.2"
+    "ava": "^0.16.0"
   }
 }
