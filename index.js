@@ -35,8 +35,10 @@ var whitelist = [
 	'getContext',
 	'createEagerElement',
 	'shouldUpdate',
+	'pure',
 	// mapped to correct method
-	'connect'
+	'lifecycle',
+	'connect',
 ]
 
 /**
@@ -95,7 +97,9 @@ module.exports = function make () {
 
 			var enhanceMethod = allowedMethods[ method ]
 
-			if ( isArray(enhanceMethod) ) {
+			if ( method === 'pure' && enhanceMethod === true ) {
+				prev.push(recompose[ method ])
+			} else if ( isArray(enhanceMethod) ) {
 				forEach(enhanceMethod, function (state) { return prev.push(recompose[ method ].apply(recompose, state)); })
 			} else {
 				prev.push(recompose[ method ](enhanceMethod))

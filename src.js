@@ -36,7 +36,8 @@ const whitelist = [
 	'shouldUpdate',
 	'pure',
 	// mapped to correct method
-	'connect'
+	'lifecycle',
+	'connect',
 ]
 
 /**
