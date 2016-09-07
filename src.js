@@ -110,8 +110,9 @@ module.exports = function make ( ...args ) {
 		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
 	}
 
-	if ( allowedMethods.connect ) {
-		return connect(allowedMethods.connect)(compose(...mappedMethods)(React.createClass(component)))
+	if ( allowedMethods.connect || allowedMethods.connect === true ) {
+		const connectFn = allowedMethods.connect === true ? connect() : connect(allowedMethods.connect)
+		return connectFn(compose(...mappedMethods)(React.createClass(component)))
 	} else {
 		return compose(...mappedMethods)(React.createClass(component))
 	}
