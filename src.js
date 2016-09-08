@@ -106,7 +106,6 @@ module.exports = function make ( ...args ) {
 	}, [])
 
 	component.render = function () {
-		// const classes = { classes: cx({ name: enhancements.displayName }) }
 		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
 	}
 

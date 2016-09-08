@@ -110,11 +110,8 @@ module.exports = function make () {
 	}, [])
 
 	component.render = function () {
-		// const classes = { classes: cx({ name: enhancements.displayName }) }
 		return enhancements.render(Object.assign({}, this.props, { props: this.props }), this.refs, this.context)
 	}
-
-	console.log('allowedMethods.connect', allowedMethods.connect)
 
 	if ( allowedMethods.connect || allowedMethods.connect === true ) {
 		var connectFn = allowedMethods.connect === true ? connect() : connect(allowedMethods.connect)
