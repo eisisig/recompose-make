@@ -103,8 +103,8 @@ module.exports = function make ( ...args ) {
 		return prev
 	}, [])
 
-	if ( !allowedMethods.dirty && allowedMethods.dirty === true ) {
-		mappedMethods.push(recompose['pure'])
+	if ( !allowedMethods.dirty ) {
+		mappedMethods.push(recompose[ 'pure' ])
 	}
 
 	component.render = function () {
