@@ -1,45 +1,27 @@
-'use strict'
+'use strict';
 
-var React = require('react')
-var forEach = require('lodash/forEach')
-var ref = require('react-redux');
-var connect = ref.connect;
-var isArray = require('lodash/isArray')
-var keys = require('lodash/keys')
-var map = require('lodash/map')
-var pick = require('lodash/pick')
-var reduce = require('lodash/reduce')
-var recompose = require('recompose')
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var compose = recompose.compose
-var renderNothing = recompose.renderNothing
+var React = require('react');
+var forEach = require('lodash/forEach');
 
-var whitelist = [
-	'defaultProps',
-	'setPropTypes',
-	'setDisplayName',
-	'displayName',
-	'propTypes',
-	'mapProps',
-	'renameProps',
-	'renameProp',
-	'flattenProp',
-	'onlyUpdateForKeys',
-	'onlyUpdateForPropTypes',
-	'withState',
-	'withProps',
-	'withPropsOnChange',
-	'withHandlers',
-	'withReducer',
-	'withContext',
-	'getContext',
-	'createEagerElement',
-	'shouldUpdate',
-	'pure',
-	// mapped to correct method
-	'lifecycle',
-	'connect',
-]
+var _require = require('react-redux');
+
+var connect = _require.connect;
+
+var isArray = require('lodash/isArray');
+var keys = require('lodash/keys');
+var map = require('lodash/map');
+var pick = require('lodash/pick');
+var reduce = require('lodash/reduce');
+var recompose = require('recompose');
+
+var compose = recompose.compose;
+var renderNothing = recompose.renderNothing;
+
+var whitelist = ['defaultProps', 'setPropTypes', 'setDisplayName', 'displayName', 'propTypes', 'mapProps', 'renameProps', 'renameProp', 'flattenProp', 'onlyUpdateForKeys', 'onlyUpdateForPropTypes', 'withState', 'withProps', 'withPropsOnChange', 'withHandlers', 'withReducer', 'withContext', 'getContext', 'createEagerElement', 'shouldUpdate', 'pure',
+// mapped to correct method
+'lifecycle', 'connect'];
 
 /**
  * @method make
@@ -56,69 +38,69 @@ var whitelist = [
  * export const render = ({ type, label, onClick }) => <button onClick={ onClick } type={ type }>{ label }</button>
  * export default make({ displayName, defaultProps, render })
  */
-module.exports = function make () {
-	var args = [], len = arguments.length;
-	while ( len-- ) args[ len ] = arguments[ len ];
+module.exports = function make() {
 
+	var enhancements = void 0,
+	    displayName = void 0;
 
-	var enhancements, displayName
-
-	if ( args.length > 2 ) {
-		console.warn('too many arguments')
-		return compose(renderNothing())
-	} else if ( args.length > 1 ) {
-		displayName = args[ 0 ]
-		enhancements = args[ 1 ]
+	if (arguments.length > 2) {
+		console.warn('too many arguments');
+		return compose(renderNothing());
+	} else if (arguments.length > 1) {
+		displayName = arguments.length <= 0 ? undefined : arguments[0];
+		enhancements = arguments.length <= 1 ? undefined : arguments[1];
 	} else {
-		enhancements = args[ 0 ]
+		enhancements = arguments.length <= 0 ? undefined : arguments[0];
 	}
 
-	if ( !enhancements.render ) {
-		console.warn('render method is required for make components')
-		return compose(renderNothing())
+	if (!enhancements.render) {
+		console.warn('render method is required for make components');
+		return compose(renderNothing());
 	}
 
-	var component = {}
+	var component = {};
 
-	var allowedMethods = pick(enhancements, whitelist)
+	var allowedMethods = pick(enhancements, whitelist);
 
-	allowedMethods.setDisplayName = 'Component'
+	allowedMethods.setDisplayName = 'Component';
 
-	if ( displayName || allowedMethods.displayName ) {
-		allowedMethods.setDisplayName = displayName || allowedMethods.displayName
+	if (displayName || allowedMethods.displayName) {
+		allowedMethods.setDisplayName = displayName || allowedMethods.displayName;
 	}
 
-	if ( allowedMethods.propTypes ) {
-		allowedMethods.setPropTypes = allowedMethods.propTypes
+	if (allowedMethods.propTypes) {
+		allowedMethods.setPropTypes = allowedMethods.propTypes;
 	}
 
-	var mappedMethods = reduce(keys(allowedMethods), function ( prev, method ) {
-		if ( recompose.hasOwnProperty(method) ) {
+	var mappedMethods = reduce(keys(allowedMethods), function (prev, method) {
+		if (recompose.hasOwnProperty(method)) {
 
-			var enhanceMethod = allowedMethods[ method ]
+			var enhanceMethod = allowedMethods[method];
 
-			if ( method === 'pure' && enhanceMethod === true ) {
-				prev.push(recompose[ method ])
-			} else if ( isArray(enhanceMethod) ) {
-				forEach(enhanceMethod, function (state) { return prev.push(recompose[ method ].apply(recompose, state)); })
+			if (isArray(enhanceMethod)) {
+				forEach(enhanceMethod, function (state) {
+					return prev.push(recompose[method].apply(recompose, state));
+				});
 			} else {
-				prev.push(recompose[ method ](enhanceMethod))
+				prev.push(recompose[method](enhanceMethod));
 			}
-
 		}
-		return prev
-	}, [])
+		return prev;
+	}, []);
+
+	if (!allowedMethods.dirty && allowedMethods.dirty === true) {
+		mappedMethods.push(recompose['pure']);
+	}
 
 	component.render = function () {
-		return enhancements.render(Object.assign({}, this.props, { props: this.props }), this.refs, this.context)
-	}
+		return enhancements.render(_extends({}, this.props, { props: this.props }), this.refs, this.context);
+	};
 
-	if ( allowedMethods.connect || allowedMethods.connect === true ) {
-		var connectFn = allowedMethods.connect === true ? connect() : connect(allowedMethods.connect)
-		return connectFn(compose.apply(void 0, mappedMethods)(React.createClass(component)))
+	if (allowedMethods.connect || allowedMethods.connect === true) {
+		var connectFn = allowedMethods.connect === true ? connect() : connect(allowedMethods.connect);
+		return connectFn(compose.apply(undefined, mappedMethods)(React.createClass(component)));
 	} else {
-		return compose.apply(void 0, mappedMethods)(React.createClass(component))
+		return compose.apply(undefined, mappedMethods)(React.createClass(component));
 	}
-
-}
+};
 
