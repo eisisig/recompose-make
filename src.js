@@ -93,9 +93,7 @@ module.exports = function make ( ...args ) {
 
 			const enhanceMethod = allowedMethods[ method ]
 
-			if ( method === 'pure' && enhanceMethod === true ) {
-				prev.push(recompose[ method ])
-			} else if ( isArray(enhanceMethod) ) {
+			if ( isArray(enhanceMethod) ) {
 				forEach(enhanceMethod, state => prev.push(recompose[ method ](...state)))
 			} else {
 				prev.push(recompose[ method ](enhanceMethod))
@@ -104,6 +102,10 @@ module.exports = function make ( ...args ) {
 		}
 		return prev
 	}, [])
+
+	if ( !allowedMethods.dirty && allowedMethods.dirty === true ) {
+		mappedMethods.push(recompose['pure'])
+	}
 
 	component.render = function () {
 		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
