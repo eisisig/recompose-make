@@ -2,10 +2,11 @@
   "name": "recompose-make",
   "version": "1.5.2",
   "description": "Small personal util to make more functional components in a different way using recompose",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "prepublish": "npm run build",
-    "build": "babel src.js > index.js"
+    "prepublish": "babel src --out-dir lib",
+    "build": "babel src --out-dir lib",
+    "dev": "babel src --out-dir lib --watch"
   },
   "keywords": [
     "recompose",
