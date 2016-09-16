@@ -1,17 +1,10 @@
 'use strict'
 
-const React = require('react')
-const forEach = require('lodash/forEach')
-const { connect } = require('react-redux')
-const isArray = require('lodash/isArray')
-const keys = require('lodash/keys')
-const map = require('lodash/map')
-const pick = require('lodash/pick')
-const reduce = require('lodash/reduce')
-const recompose = require('recompose')
-
-const compose = recompose.compose
-const renderNothing = recompose.renderNothing
+import React from 'react'
+import forEach from 'lodash/forEach'
+import { connect } from 'react-redux'
+import { isArray, keys, pick, reduce } from 'lodash'
+import recompose from 'recompose'
 
 const whitelist = [
 	'defaultProps',
@@ -40,6 +33,10 @@ const whitelist = [
 	'connect',
 ]
 
+export const compose = recompose.compose
+
+export const renderNothing = recompose.renderNothing
+
 /**
  * @method make
  * @param args
@@ -55,7 +52,7 @@ const whitelist = [
  * export const render = ({ type, label, onClick }) => <button onClick={ onClick } type={ type }>{ label }</button>
  * export default make({ displayName, defaultProps, render })
  */
-module.exports = function make ( ...args ) {
+export default function make ( ...args ) {
 
 	let enhancements, displayName
 

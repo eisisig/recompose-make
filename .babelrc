@@ -1,8 +1,9 @@
 {
   "presets": [
-    ["latest",  { "es2015": { "loose": true } }]
+    ["latest", { "es2015": { "loose": true } }]
   ],
   "plugins": [
-    "transform-object-rest-spread",
+    "lodash",
+    "transform-object-rest-spread"
   ]
 }
