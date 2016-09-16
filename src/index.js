@@ -4,7 +4,7 @@ import React from 'react'
 import forEach from 'lodash/forEach'
 import { connect } from 'react-redux'
 import { isArray, keys, pick, reduce } from 'lodash'
-import recompose from 'recompose'
+import * as recompose from 'recompose'
 
 const whitelist = [
 	'defaultProps',
