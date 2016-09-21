@@ -1,118 +1,74 @@
-'use strict'
-
 import React from 'react'
-import forEach from 'lodash/forEach'
 import { connect } from 'react-redux'
-import { isArray, keys, pick, reduce } from 'lodash'
 import * as recompose from 'recompose'
+import { compact, pull, keys, omit, forEach, sortBy, isArray, pick, reduce } from 'lodash'
 
-const whitelist = [
+const recomposeMethods = [
+	// 'branch',
 	'defaultProps',
-	'setPropTypes',
 	'setDisplayName',
-	'displayName',
-	'propTypes',
-	'mapProps',
-	'renameProps',
-	'renameProp',
+	'setPropTypes',
+	'componentFromProp',
+	'createEventHandler',
 	'flattenProp',
+	'getContext',
+	'getDisplayName',
+	'hoistStatics',
+	'lifecycle',
+	'mapProps',
+	'mapPropsStream',
 	'onlyUpdateForKeys',
 	'onlyUpdateForPropTypes',
-	'withState',
-	'withProps',
-	'withPropsOnChange',
-	'withHandlers',
-	'withReducer',
-	'withContext',
-	'getContext',
-	'createEagerElement',
+	'renameProp',
+	'renameProps',
+	'setStatic',
 	'shouldUpdate',
-	'pure',
-	// mapped to correct method
-	'lifecycle',
+	'withProps',
 	'connect',
+	'withReducer',
+	'withState',
+	'withPropsOnChange',
+	'withContext',
+	'withHandlers',
 ]
 
 export const compose = recompose.compose
 
 export const renderNothing = recompose.renderNothing
 
-/**
- * @method make
- * @param args
- *
- * @example export const displayName = 'Button'
- * export const defaultProps = {
- *      label: '',
- *      type: 'button',
- * }
- * export const withHandlers = {
- *      onClick: props => props.handleClick
- * }
- * export const render = ({ type, label, onClick }) => <button onClick={ onClick } type={ type }>{ label }</button>
- * export default make({ displayName, defaultProps, render })
- */
-export default function make ( ...args ) {
+export default function make ( args ) {
 
-	let enhancements, displayName
+	return function ( Component ) {
 
-	if ( args.length > 2 ) {
-		console.warn('too many arguments')
-		return compose(renderNothing())
-	} else if ( args.length > 1 ) {
-		displayName = args[ 0 ]
-		enhancements = args[ 1 ]
-	} else {
-		enhancements = args[ 0 ]
-	}
+		if ( !Component && typeof Component !== 'function' ) return console.warn('Please provide a Component to enhance')
 
-	if ( !enhancements.render ) {
-		console.warn('render method is required for make components')
-		return compose(renderNothing())
-	}
+		const enhancements = reduce(recomposeMethods, ( last, current ) => {
 
-	let component = {}
+			// remap bad keys
+			if ( current === 'propsTypes' ) current = 'setPropTypes'
 
-	const allowedMethods = pick(enhancements, whitelist)
+			if ( args.hasOwnProperty(current) ) {
 
-	allowedMethods.setDisplayName = 'Component'
+				if ( current === 'withState' || current === 'withReducer' ) {
+					forEach(args[ current ], state => {
+						last.push(recompose[ current ](...state))
+					})
+				} else if ( current === 'connect' ) {
 
-	if ( displayName || allowedMethods.displayName ) {
-		allowedMethods.setDisplayName = displayName || allowedMethods.displayName
-	}
+					args[ current ] === true
+						? last.push(connect())
+						: last.push(connect(...[].concat(args[ current ])))
 
-	if ( allowedMethods.propTypes ) {
-		allowedMethods.setPropTypes = allowedMethods.propTypes
-	}
-
-	const mappedMethods = reduce(keys(allowedMethods), ( prev, method ) => {
-		if ( recompose.hasOwnProperty(method) ) {
-
-			const enhanceMethod = allowedMethods[ method ]
-
-			if ( isArray(enhanceMethod) ) {
-				forEach(enhanceMethod, state => prev.push(recompose[ method ](...state)))
-			} else {
-				prev.push(recompose[ method ](enhanceMethod))
+				} else {
+					last.push(recompose[ current ](args[ current ]))
+				}
 			}
 
-		}
-		return prev
-	}, [])
+			return last
+		}, [])
 
-	if ( !allowedMethods.dirty ) {
-		mappedMethods.push(recompose[ 'pure' ])
+		if ( !args.impure && args.impure !== true ) enhancements.push(recompose.pure)
+
+		return compose(...enhancements)((Component))
 	}
-
-	component.render = function () {
-		return enhancements.render({ ...this.props, ...{ props: this.props } }, this.refs, this.context)
-	}
-
-	if ( allowedMethods.connect || allowedMethods.connect === true ) {
-		const connectFn = allowedMethods.connect === true ? connect() : connect(allowedMethods.connect)
-		return connectFn(compose(...mappedMethods)(React.createClass(component)))
-	} else {
-		return compose(...mappedMethods)(React.createClass(component))
-	}
-
 }
