@@ -1,6 +1,6 @@
 {
   "name": "recompose-make",
-  "version": "1.6.1",
+  "version": "2.0.0",
   "description": "Small personal util to make more functional components in a different way using recompose",
   "main": "lib/index.js",
   "scripts": {
