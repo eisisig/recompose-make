@@ -30,6 +30,7 @@ const recomposeMethods = [
 	'withPropsOnChange',
 	'withContext',
 	'withHandlers',
+	'enhance',
 ]
 
 export const compose = recompose.compose
@@ -53,13 +54,16 @@ export default function make ( args ) {
 					forEach(args[ current ], state => {
 						last.push(recompose[ current ](...state))
 					})
-				} else if ( current === 'connect' ) {
-
+				}
+				else if ( current === 'connect' ) {
 					args[ current ] === true
 						? last.push(connect())
 						: last.push(connect(...[].concat(args[ current ])))
-
-				} else {
+				}
+				else if ( current === 'enhance' || current === 'enhancements' ) {
+					last.push(...[].concat(args[ current ]))
+				}
+				else {
 					last.push(recompose[ current ](args[ current ]))
 				}
 			}
