@@ -14,7 +14,6 @@ const recomposeMethods = [
 	'getContext',
 	'getDisplayName',
 	'hoistStatics',
-	'lifecycle',
 	'mapProps',
 	'mapPropsStream',
 	'onlyUpdateForKeys',
@@ -30,6 +29,7 @@ const recomposeMethods = [
 	'withPropsOnChange',
 	'withContext',
 	'withHandlers',
+	'lifecycle',
 	'enhance',
 ]
 
