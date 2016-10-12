@@ -5,8 +5,8 @@ import { compact, pull, keys, omit, forEach, sortBy, isArray, pick, reduce } fro
 
 const recomposeMethods = [
 	// 'branch',
-	'defaultProps',
 	'setDisplayName',
+	'defaultProps',
 	'setPropTypes',
 	'componentFromProp',
 	'createEventHandler',
@@ -73,6 +73,6 @@ export default function make ( args ) {
 
 		if ( !args.impure && args.impure !== true ) enhancements.push(recompose.pure)
 
-		return compose(...enhancements)((Component))
+		return compose(recompose.setDisplayName(Component.name), ...enhancements)((Component))
 	}
 }
