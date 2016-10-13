@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import * as recompose from 'recompose'
 import { compact, pull, keys, omit, forEach, sortBy, isArray, pick, reduce } from 'lodash'
+import createContext from './createContext'
 
 const recomposeMethods = [
 	// 'branch',
@@ -28,6 +29,7 @@ const recomposeMethods = [
 	'withState',
 	'withPropsOnChange',
 	'withContext',
+	'createContext',
 	'withHandlers',
 	'lifecycle',
 	'enhance',
@@ -50,10 +52,14 @@ export default function make ( args ) {
 
 			if ( args.hasOwnProperty(current) ) {
 
-				if ( current === 'withState' || current === 'withReducer' ) {
+				if ( current === 'withState' || current === 'withReducer' || current === 'withContext' ) {
 					forEach(args[ current ], state => {
 						last.push(recompose[ current ](...state))
 					})
+				}
+				// custom
+				else if ( current === 'createContext' ) {
+					last.push(createContext(args[ current ]))
 				}
 				else if ( current === 'connect' ) {
 					args[ current ] === true
