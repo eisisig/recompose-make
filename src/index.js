@@ -35,7 +35,7 @@ const recomposeMethods = [
 	'enhance',
 ]
 
-export const compose = recompose.compose
+export { createContext }
 
 export const renderNothing = recompose.renderNothing
 
@@ -79,6 +79,6 @@ export default function make ( args ) {
 
 		if ( !args.impure && args.impure !== true ) enhancements.push(recompose.pure)
 
-		return compose(recompose.setDisplayName(Component.name), ...enhancements)((Component))
+		return recompose.compose(recompose.setDisplayName(Component.name), ...enhancements)((Component))
 	}
 }
